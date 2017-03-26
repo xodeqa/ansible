@@ -25,5 +25,8 @@ handle the configuration appropriately.
 ### More example see
 - https://github.com/ansible/ansible-examples
 
+### Ansible Documentation
+- http://docs.ansible.com/ansible/index.html
+
 We would love to see contributions and improvements, so please fork this
 repository on GitHub and send us your changes via pull requests.
