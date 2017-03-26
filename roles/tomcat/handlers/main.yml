@@ -1,0 +1,3 @@
+---
+- name: start tomcat
+  shell: bash /opt/apache-tomcat-7.0.75/bin/startup.sh

@@ -1,0 +1,47 @@
+---
+- name: check if redis user exists(ignore errors)
+  command: id {{ redis_user }}
+  ignore_errors: yes
+  changed_when: false
+  register: user_exists
+
+- name: add redis user
+  user:
+    name: "{{ redis_user }}"
+    comment: "Redis"
+    home: "{{ redis_install_dir }}"
+    shell: /bin/false
+    system: yes
+  when: user_exists|failed
+
+- name: create redis working directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: no
+    owner: "{{ redis_user }}"
+    group: "{{ redis_user }}"
+  with_items:
+    - "{{ redis_dir }}"
+    - "{{ redis_logdir }}"
+    - "{{ redis_piddir }}"
+
+- name: create redis install directory
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ redis_install_dir }}"
+
+- name: compile redis
+  command: make
+  args:
+    chdir: /usr/local/src/redis-{{ redis_version }}
+    creates: /usr/local/src/redis-{{ redis_version }}/src/redis-server
+
+- name: install redis
+  command: make PREFIX={{ redis_install_dir }} install
+  args:
+    chdir: /usr/local/src/redis-{{ redis_version }}
+    creates: "{{ redis_install_dir }}/bin/redis-server"
+

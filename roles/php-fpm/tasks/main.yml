@@ -1,0 +1,53 @@
+---
+- name: Copy the REMI repository definition
+  copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
+
+- name: Create the GPG key for REMI
+  copy: src=RPM-GPG-KEY-remi dest=/etc/pki/rpm-gpg
+
+- name: Install php-fpm and deps
+  yum: name={{ item }} enablerepo=remi,remi-php56 state=present
+  with_items:
+    - php-common
+    - php-devel
+    - php-fpm
+    - php-gd
+    - php-mcrypt
+    - php-pdo
+    - php-pecl-redis
+    - php-gearman
+    - php-mbstring
+    - php-http
+    - php-memcache
+    - php-soap
+    - php-mysqlnd
+    - php-xml
+    - php-xcache
+    - ImageMagick
+    - php-pecl-imagick
+
+- name: create user www
+  user: 
+    name: www
+    comment: "php and nginx user"
+    shell: /sbin/nologin
+
+- name: creates weblog directory
+  file:
+    path: "{{ weblogs_dir }}"
+    state: directory
+    owner: www
+    group: www
+
+- name: Copying php-fpm config
+  template: src={{ item }} dest=/{{ item }} backup=yes
+  with_items:
+    - etc/php-fpm.conf
+    - etc/php.ini
+    - etc/php.d/40-xcache.ini
+    - etc/php-fpm.d/www.conf
+  notify: restart php-fpm
+
+
+- include: upgrade_curl.yml
+

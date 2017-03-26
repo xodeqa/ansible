@@ -1,0 +1,9 @@
+---
+- name: Copy the CityFan repository definition
+  copy: src=CityFan.repo dest=/etc/yum.repos.d/CityFan.repo
+
+- name: upgrade curl to newest version
+  yum: name=curl enablerepo=CityFan state=latest
+  tags:
+    - upgrade_curl
+  

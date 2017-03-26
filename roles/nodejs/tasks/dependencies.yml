@@ -1,0 +1,9 @@
+---
+- name: install unzip dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - xz
+    - unzip
+  when: ansible_os_family == "RedHat"

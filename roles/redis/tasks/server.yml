@@ -1,0 +1,10 @@
+---
+# to be continue
+- name: add redis config file
+  template:
+    src: 
+    dest: 
+    mode: 0600
+    backup: yes
+  nofity: "restart redis {{ redis_port }}"
+

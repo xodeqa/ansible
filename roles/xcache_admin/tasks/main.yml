@@ -1,0 +1,31 @@
+---
+- name: install xcache-admin for php
+  yum: name=xcache-admin enablerepo=remi,remi-php56 state=present
+
+- name: setup xcache admin user
+  lineinfile:
+    dest: /etc/php.d/40-xcache.ini
+    regexp: "^xcache.admin.user ="
+    line: "xcache.admin.user = \"admin\""
+    backup: yes
+
+- name: setup xcache admin passwd
+  lineinfile:
+    dest: /etc/php.d/40-xcache.ini
+    regexp: "^xcache.admin.pass ="
+    line: "xcache.admin.pass = \"f9ccef7f9793092cdb971bd00a821717\""
+    backup: yes
+  notify:  reload php-fpm
+  
+- name: make sym link to xcache htdocs
+  file:
+    src: /usr/share/xcache
+    dest: /ssd/www/xcache_admin
+    state: link
+
+- name: copy nginx config file
+  copy:
+    src: xcache_admin.conf
+    dest: /etc/nginx/conf.d/xcache_admin.conf
+  notify: reload nginx
+

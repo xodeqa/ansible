@@ -1,0 +1,6 @@
+---
+- name: install Java {{ java_jdk_version }}
+  yum: name={{ java_jdk_version }} state=present
+  tags:
+    - java_install
+

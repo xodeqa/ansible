@@ -1,0 +1,46 @@
+---
+- name: install xhprof
+  yum: name={{ item }} enablerepo=remi,remi-php56 state=present
+  with_items:
+    - xhprof
+    - php-xcache
+  notify: restart php-fpm
+
+- name: create xhprof output dir
+  file:
+    path: /data/xhprof_result
+    state: directory
+    recurse: yes
+    owner: www
+    group: www
+
+- name: modify output path
+  lineinfile:
+    dest: /etc/php.d/40-xhprof.ini
+    regexp: '^xhprof.output_dir'
+    line: 'xhprof.output_dir = /data/xhprof_result'
+    backup: yes
+  notify: restart php-fpm
+
+- name: create xhprof GUI website dir
+  file:
+    path: /ssd/www/zencart/website
+    state: directory
+  
+- name: setup GUI link
+  file:
+    src: /usr/share/xhprof/xhprof_html
+    dest: /ssd/www/zencart/website/xxhprof
+    state: link
+  tags:
+    - xhprof_gui_link
+
+- name: copy demo file
+  template: 
+    src: "{{ item }}"
+    dest: /ssd/www/zencart/website/xxhprof/{{ item  }}
+    backup: yes
+  with_items:
+    - xhprof_demo.php
+    - index2.php  # a customer index gui
+

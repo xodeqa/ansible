@@ -1,0 +1,4 @@
+---
+- name: take effect sysctl.conf
+  shell: modprobe bridge && sysctl -p
+

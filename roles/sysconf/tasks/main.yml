@@ -1,0 +1,9 @@
+---
+- name: Copying system opt file
+  template: src={{ item }} dest=/{{ item }} backup=yes
+  with_items:
+    - etc/security/limits.conf
+    - etc/security/limits.d/90-nproc.conf
+    - etc/sysctl.conf
+  notify: take effect sysctl.conf
+

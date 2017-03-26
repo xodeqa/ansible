@@ -1,0 +1,14 @@
+---
+- name: download nodejs binary file
+  get_url:
+    url: "{{ nodejs_download_url }}"
+    dest: /usr/local/src/node-v{{ nodejs_version }}-linux-x64.tar.xz
+
+- name: extract archive
+  unarchive:
+    src: /usr/local/src/node-v{{ nodejs_version }}-linux-x64.tar.xz
+    dest: /usr/local/src
+    creates: /usr/local/src/node-v{{ nodejs_version }}-linux-x64/bin/node
+    copy: no
+
+
